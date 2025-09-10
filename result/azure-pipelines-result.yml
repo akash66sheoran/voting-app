@@ -6,7 +6,7 @@ resources:
 variables:
   imageName: voting-result-app
   imageTag: '$(Build.BuildId)'
-  ecrRepo: 'voting-app'
+  ecrRepo: 'result-app'
 
 stages:
 - stage: BuildandPush
