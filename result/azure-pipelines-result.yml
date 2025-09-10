@@ -9,32 +9,25 @@ variables:
   ecrRepo: '603113353013.dkr.ecr.ap-south-1.amazonaws.com/voting-app'
 
 stages:
-- stage: Build
-  displayName: Build image
+- stage: BuildandPush
+  displayName: Build and Push
   jobs:
-  - job: Build
-    displayName: Build
+  - job: BuildandPush
+    displayName: Build and Push
     pool:
       vmImage: ubuntu-latest
     steps:
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build image
       inputs:
         command: build
+        repository: $(imageName)
         dockerfile: '$(Build.SourcesDirectory)/result/Dockerfile'
         tags: |
           $(imageTag)
 
-- stage: Push
-  dependsOn: Build
-  displayName: Push image
-  jobs:
-  - job: Push
-    displayName: Push
-    pool:
-      vmImage: ubuntu-latest
-    steps:
     - task: ECRPushImage@1
+      displayName: Push image
       inputs:
         awsCredentials: 'aws-creds'
         regionName: 'ap-south-1'
@@ -42,3 +35,4 @@ stages:
         sourceImageName: '$(imageName)'
         sourceImageTag: '$(imageTag)'
         repositoryName: '$(ecrRepo)'
+        pushTag: $(imageTag)
