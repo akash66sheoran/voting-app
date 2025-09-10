@@ -4,7 +4,9 @@ resources:
 - repo: self
 
 variables:
-  tag: '$(Build.BuildId)'
+  imageName: voting-result-app
+  imageTag: '$(Build.BuildId)'
+  ecrRepo: '603113353013.dkr.ecr.ap-south-1.amazonaws.com/voting-app'
 
 stages:
 - stage: Build
@@ -21,4 +23,22 @@ stages:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/result/Dockerfile'
         tags: |
-          $(tag)
+          $(imageTag)
+
+- stage: Push
+  dependsOn: Build
+  displayName: Push image
+  jobs:
+  - job: Push
+    displayName: Push
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: ECRPushImage@1
+      inputs:
+        awsCredentials: 'aws-creds'
+        regionName: 'ap-south-1'
+        imageSource: 'imagename'
+        sourceImageName: '$(imageName)'
+        sourceImageTag: '$(imageTag)'
+        repositoryName: '$(ecrRepo)'
