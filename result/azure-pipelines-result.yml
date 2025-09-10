@@ -6,7 +6,7 @@ resources:
 variables:
   imageName: voting-result-app
   imageTag: '$(Build.BuildId)'
-  ecrRepo: '603113353013.dkr.ecr.ap-south-1.amazonaws.com/voting-app'
+  ecrRepo: 'voting-app'
 
 stages:
 - stage: BuildandPush
